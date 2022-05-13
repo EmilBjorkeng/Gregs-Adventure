@@ -89,6 +89,25 @@ class Player:
             self.vy -= -decreese_by
             if self.vy > 0:
                 self.vy = 0
+
+    def hit_box_calculation(self):
+        for b in boxes:
+            # Hitting wall Hitbox
+            for h in range(0, self.size - 20, 1):
+                for w in range(0, 15, 1):
+                    if self.y + h > b.y and self.y + h < b.y + b.sizeY:
+                        if self.x + 5 + w > b.x and self.x + 5 + w < b.x + b.sizeX:
+                            self.x = b.x + b.sizeX - 5
+                        elif self.x + self.size - 20 + w > b.x and self.x + self.size - 20 + w < b.x + b.sizeX:
+                            self.x = b.x - self.size + 5
+
+            # OnGround Hitbox
+            for h in range(0, math.floor(self.size / 5) + 1, 1):
+                for w in range(0, self.size - 20, 1):
+                    if self.y + self.size - h + 1 > b.y and self.y + self.size - h < b.y + b.sizeY:
+                        if self.x + 10 + w > b.x and self.x + 10 + w < b.x + b.sizeX:
+                            self.y = b.y - self.size
+                            self.onGround = True
     
     def update(self):
         #print(str(self.vx) + " : " + str(self.vy))
@@ -102,13 +121,7 @@ class Player:
             self.x = 0 - self.size
 
         self.onGround = False
-        for b in boxes:
-            for h in range(0, math.floor(self.size / 5) + 1, 1):
-                for w in range(0, self.size, 1):
-                    if self.y + self.size - h + 1 > b.y and self.y + self.size - h < b.y + b.sizeY:
-                        if self.x + w > b.x and self.x + w < b.x + b.sizeX:
-                            self.y = b.y - self.size
-                            self.onGround = True
+        self.hit_box_calculation()
         
         if not self.onGround and self.vy < self.terminal_vel:
             self.vy += world.gravity * self.weight

@@ -10,8 +10,8 @@ clock = pygame.time.Clock()
 
 # Settings
 from settings import *
-boxes.append(Box(display, -100, 580, 900, 10))
-boxes.append(Box(display, 500, 400, 10, 180))
+boxes.append(Box(display, 0, 580, 800, 10))
+boxes.append(Box(display, 500, 550, 10, 30))
 
 # Player
 from player import *
@@ -50,15 +50,15 @@ while running:
     for i in boxes:
         i.draw()
 
-    # Hitting Wall Hitbox
-    #pygame.draw.rect(display, (255, 255, 0), (greg.x + 5, greg.y, 15, greg.size - 10))
-    #pygame.draw.rect(display, (255, 255, 0), (greg.x + greg.size - 20, greg.y, 15, greg.size - 10))
     # OnGround Hitbox
     #pygame.draw.rect(display, (0, 255, 0), (
-    #    greg.x + 10,
+    #    greg.x + 5,
     #    greg.y + greg.size - math.floor(greg.size / 5) + 1,
-    #    greg.size - 20,
+    #    greg.size - 10,
     #    math.floor(greg.size / 5) + 1))
+    # Hitting Wall Hitbox
+    #pygame.draw.rect(display, (255, 255, 0), (greg.x + greg.padding, greg.y, 15, greg.size - 10))
+    #pygame.draw.rect(display, (255, 255, 0), (greg.x + greg.size - 15 - greg.padding, greg.y, 15, greg.size - 10))
 
     pygame.display.update()
     clock.tick(fps)

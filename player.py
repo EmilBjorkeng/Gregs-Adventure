@@ -1,17 +1,17 @@
 import pygame
 import math
-from main import display
-from main import world
-from main import boxes
+from settings import *
 
 class Player:
-    def __init__(self, x, y):
+    def __init__(self, display, x, y):
+        self.dis = display
         self.x = x
         self.y = y
         self.vx = 0
         self.vy = 0
-        self.speed = 2.4
+        self.speed = 2.7
         self.jump_force = 30
+        self.jump_cooldown = 0
         self.terminal_vel = 10
         self.weight = 0.8
         self.size = 50
@@ -31,15 +31,17 @@ class Player:
         self.walking = False
         self.onGround = False
 
-    def move(self, x, y):
-        self.vx += x
-        self.vy += y
-        if not x == 0:
-            self.walking = True
+    def move(self, value):
+        self.vx += value
+        self.walking = True
 
-    def jump(self):
+    def jump(self, held_space):
         if self.onGround:
-            self.vy = -self.jump_force
+            if self.jump_cooldown <= 0 or held_space < 5:
+                self.vy = -self.jump_force
+                self.jump_cooldown = 5
+            else:
+                self.jump_cooldown -= 1
     
     def draw(self):
         if self.walking:
@@ -51,7 +53,7 @@ class Player:
             image = self.sprite
         if self.facing_left:
             image = pygame.transform.flip(image, True, False)
-        display.blit(image, (self.x, self.y))
+        self.dis.blit(image, (self.x, self.y))
         self.walking = False
 
     def friction_calculation(self):
@@ -89,10 +91,15 @@ class Player:
                 self.vy = 0
     
     def update(self):
-        print(str(self.vx) + " : " + str(self.vy))
+        #print(str(self.vx) + " : " + str(self.vy))
         self.x += self.vx
         self.y += self.vy
         self.friction_calculation()
+
+        if self.x < 0 - self.size:
+            self.x = 800
+        if self.x > 800:
+            self.x = 0 - self.size
 
         self.onGround = False
         for b in boxes:

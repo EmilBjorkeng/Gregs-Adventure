@@ -25,22 +25,21 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    greg.is_walking = False
     keys = pygame.key.get_pressed()
     # Left
     if keys[pygame.K_a]:
-        greg.move(-1)
+        greg.move(-greg.speed)
         greg.facing_left = True
+        greg.is_walking = True
     # Right
     if keys[pygame.K_d]:
-        greg.move(1)
+        greg.move(greg.speed)
         greg.facing_left = False
+        greg.is_walking = True
     # Jump
     if keys[pygame.K_SPACE]:
-        greg.jump(held_space)
-        if held_space < 20:
-            held_space += 1
-    elif held_space > 0:
-        held_space -= 0.5
+        greg.jump()
     # Crouch
     greg.is_crouching = False
     if keys[pygame.K_LSHIFT]:
@@ -52,21 +51,10 @@ while running:
     display.fill((255, 255, 255))
 
     greg.draw()
+    #greg.draw_hitboxes()
 
     for i in boxes:
         i.draw()
-
-    move_down_by = 0
-    if greg.is_crouching:
-        move_down_by = greg.crouch_decrees
-
-    # OnGround Hitbox
-    #pygame.draw.rect(display, (0, 255, 0), (greg.x + 5, greg.y + greg.size - math.floor(greg.size / 5) + 1, greg.size - 10, math.floor(greg.size / 5) + 1))
-    # Head
-    #pygame.draw.rect(display, (255, 0, 0), (greg.x + greg.padding, greg.y + move_down_by, greg.size - greg.padding * 2, 15))
-    # Hitting Wall Hitbox
-    #pygame.draw.rect(display, (255, 255, 0), (greg.x + greg.padding, greg.y + 15 + move_down_by, 15, greg.size - 24 - move_down_by))
-    #pygame.draw.rect(display, (255, 255, 0), (greg.x + greg.size - 15 - greg.padding, greg.y + 15 + move_down_by, 15, greg.size - 24 - move_down_by))
 
     pygame.display.update()
     clock.tick(fps)

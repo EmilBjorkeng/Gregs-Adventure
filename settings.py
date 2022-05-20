@@ -3,8 +3,7 @@ import pygame
 class World:
     def __init__(self):
         self.gravity = 3.8
-        self.drag = 2.5
-        self.friction = 4
+        self.friction = 0.8
 
 world = World()
 

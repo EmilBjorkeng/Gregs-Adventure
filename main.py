@@ -28,15 +28,22 @@ while running:
     greg.is_walking = False
     keys = pygame.key.get_pressed()
     # Left
+    left_and_right = 0
     if keys[pygame.K_a]:
         greg.move(-greg.speed)
         greg.facing_left = True
         greg.is_walking = True
+        left_and_right += 1
     # Right
     if keys[pygame.K_d]:
         greg.move(greg.speed)
         greg.facing_left = False
         greg.is_walking = True
+        left_and_right += 1
+    # Left and Right
+    if left_and_right == 2:
+        greg.move(0)
+        greg.is_walking = False
     # Jump
     if keys[pygame.K_SPACE]:
         greg.jump()

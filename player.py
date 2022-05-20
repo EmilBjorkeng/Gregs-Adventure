@@ -1,9 +1,6 @@
-from operator import truediv
-from re import T
 import pygame
 import math
 from settings import *
-import main
 
 class Player:
     def __init__(self, display, x: int, y: int):
@@ -14,8 +11,9 @@ class Player:
 
         # Stats
         self.speed = 8
-        self.crouch_mult = 0.7
+        self.crouch_speed_mult = 0.7
         self.jump_force = 30
+        self.crouch_jump_mult = 0.8
         self.mass = 0.8
 
         # Hitbox
@@ -28,6 +26,7 @@ class Player:
         self.onGround = False
         self.is_jumping = False
         self.is_crouching = False
+        self.did_crouching = False
 
         # Sprites
         self.sprite_size = 50
@@ -62,12 +61,15 @@ class Player:
     def move(self, vel):
         mult = 1
         if self.is_crouching and self.onGround:
-            mult = self.crouch_mult
+            mult = self.crouch_speed_mult
         self.vel[0] = vel * mult
 
     def jump(self):
         if self.onGround:
-            self.vel[1] = -self.jump_force
+            mult = 1
+            if self.is_crouching and self.onGround:
+                mult = self.crouch_jump_mult
+            self.vel[1] = -self.jump_force * mult
             self.is_jumping = True
     
     def draw(self):
@@ -97,9 +99,20 @@ class Player:
         self.dis.blit(image, self.pos)
 
     def hit_box_calculation(self):
-        move_down_by = 0
         if self.is_crouching:
             move_down_by = self.crouch_hitbox_decrees
+            self.did_crouching = True
+        else:
+            move_down_by = 0
+            # Big Head after release
+            if self.did_crouching:
+                for b in boxes:
+                    for h in range(0, self.sprite_size - 20, 1):
+                        for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                            if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
+                                if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
+                                    self.pos[1] = b.y + b.sizeY - move_down_by
+            self.did_crouching = False
 
         for b in boxes:
             # Hitting wall Hitbox
@@ -131,8 +144,6 @@ class Player:
         if not self.onGround:
             self.vel[1] += 2#world.gravity * self.mass
 
-        #resistence = world.drag
-        #if self.onGround:
         resistence = world.friction
 
         # Velosity Calculations
@@ -162,7 +173,7 @@ class Player:
     def draw_hitboxes(self):
         move_down_by = 0
         if self.is_crouching:
-            move_down_by = self.crouch_decrees
+            move_down_by = self.crouch_hitbox_decrees
 
         # OnGround Hitbox
         pygame.draw.rect(self.dis, (0, 255, 0), (self.pos[0] + 5, self.pos[1] + self.sprite_size - math.floor(self.sprite_size / 5) + 1, self.sprite_size - 10, math.floor(self.sprite_size / 5) + 1))

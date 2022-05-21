@@ -129,6 +129,23 @@ class Player:
                 if self.vel[i] > 0:
                     self.vel = 0
 
+        # Did crouch
+        if self.is_crouching:
+            self.did_crouching = True
+        if self.did_crouching and not self.is_crouching:
+            # Check if you can stop crouching
+            for b in boxes:
+                for h in range(0, self.sprite_size, 1):
+                    for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                        if self.pos[1] + h > b.y and self.pos[1] + h < b.y + b.sizeY:
+                            if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
+                                # If you can't
+                                self.is_crouching = True
+            # If you can
+            if not self.is_crouching:
+                self.did_crouching = False
+
+
         # Move hitbox down when crouchig
         move_down_by = 0
         if self.is_crouching:

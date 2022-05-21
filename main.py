@@ -15,6 +15,7 @@ boxes.append(Box(display, [500, 550, 10, 30], [0, 0, 255], 1.2))
 boxes.append(Box(display, [100, 470, 50, 10], [0, 0, 0], 1.2))
 boxes.append(Box(display, [150, 450, 50, 10], [0, 0, 0], 1.2))
 boxes.append(Box(display, [200, 420, 50, 10], [0, 0, 0], 1.2))
+boxes.append(Box(display, [250, 530, 50, 10], [0, 0, 0], 1.2))
 
 # Player
 from player import *
@@ -59,7 +60,7 @@ while running:
     display.fill((255, 255, 255))
 
     greg.draw()
-    greg.draw_hitboxes()
+    #greg.draw_hitboxes()
 
     for i in boxes:
         i.draw()

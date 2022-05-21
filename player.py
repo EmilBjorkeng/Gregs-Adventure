@@ -16,6 +16,7 @@ class Player:
         self.jump_force = 30
         self.crouch_jump_mult = 0.8
         self.mass = 0.8
+        self.air_friction = 1
 
         # Hitbox
         self.hitbox_padding = 5
@@ -99,47 +100,6 @@ class Player:
         # Draw sprite
         self.dis.blit(image, self.pos)
 
-    def hit_box_calculation(self):
-        if self.is_crouching:
-            move_down_by = self.crouch_hitbox_decrees
-            self.did_crouching = True
-        else:
-            move_down_by = 0
-            # Big Head after release
-            if self.did_crouching:
-                for b in boxes:
-                    for h in range(0, self.sprite_size - 20, 1):
-                        for w in range(0, self.sprite_size - self.hitbox_padding * 2 - 20, 1):
-                            if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
-                                if self.pos[0] + self.hitbox_padding + 10 + w > b.x and self.pos[0] + self.hitbox_padding + 10 + w < b.x + b.sizeX:
-                                    self.pos[1] = b.y + b.sizeY - move_down_by
-            self.did_crouching = False
-
-        for b in boxes:
-            # Hitting wall Hitbox
-            for h in range(0, self.sprite_size - 24 - move_down_by, 1):
-                for w in range(0, 15, 1):
-                    if self.pos[1] + move_down_by + 15 + h > b.y and self.pos[1] + move_down_by + 15 + h < b.y + b.sizeY:
-                        if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
-                            self.pos[0] = b.x + b.sizeX - self.hitbox_padding
-                        elif self.pos[0] + self.sprite_size - 15 - self.hitbox_padding + w > b.x and self.pos[0] + self.sprite_size - 15 - self.hitbox_padding + w < b.x + b.sizeX:
-                            self.pos[0] = b.x - self.sprite_size + self.hitbox_padding
-
-            # OnGround Hitbox
-            for h in range(0, math.floor(self.sprite_size / 5) + 1, 1):
-                for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
-                    if self.pos[1] + self.sprite_size - h + 1 > b.y and self.pos[1] + self.sprite_size - h < b.y + b.sizeY:
-                        if self.pos[0] + 5 + w > b.x and self.pos[0] + 5 + w < b.x + b.sizeX:
-                            self.pos[1] = b.y - self.sprite_size
-                            self.onGround = True
-            
-            # Head
-            for h in range(0, 15, 1):
-                for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
-                    if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
-                        if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
-                            self.pos[1] = b.y + b.sizeY - move_down_by
-
     def find_friction(self):
         for b in boxes:
             for h in range(0, math.floor(self.sprite_size / 5) + 1, 1):
@@ -147,7 +107,7 @@ class Player:
                     if self.pos[1] + self.sprite_size - h + 1 > b.y and self.pos[1] + self.sprite_size - h < b.y + b.sizeY:
                         if self.pos[0] + 5 + w > b.x and self.pos[0] + 5 + w < b.x + b.sizeX:
                             return b.friction
-        return 1.2 # in the air
+        return self.air_friction # in the air
     
     def update(self):
         # Gravity
@@ -169,26 +129,74 @@ class Player:
                 if self.vel[i] > 0:
                     self.vel = 0
 
+        # Move hitbox down when crouchig
+        move_down_by = 0
+        if self.is_crouching:
+            move_down_by = self.crouch_hitbox_decrees
+        
+        # X position
         self.pos[0] += self.vel[0]
+        for b in boxes:
+            is_colliding = True
+            while is_colliding:
+                is_colliding = False
+                for h in range(0, self.sprite_size - move_down_by, 1):
+                    for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                        if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
+                            if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
+                                is_colliding = True
+                                if self.vel[0] > 0:
+                                    self.pos[0] -= 1
+                                else:
+                                    self.pos[0] += 1
+                                break
+        
+        # Y position
         self.pos[1] += self.vel[1]
+        for b in boxes:
+            is_colliding = True
+            while is_colliding:
+                is_colliding = False
+                for h in range(0, self.sprite_size - move_down_by, 1):
+                    for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                        if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
+                            if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
+                                is_colliding = True
+                                if self.vel[1] > 0:
+                                    self.pos[1] -= 1
+                                else:
+                                    self.pos[1] += 1
+                                break
+        
+        # Check if on ground
+        self.onGround = False
+        for b in boxes:
+            for h in range(0, math.floor(self.sprite_size / 6) + 1, 1):
+                for w in range(0, self.sprite_size - self.hitbox_padding * 2 - 10, 1):
+                    if self.pos[1] + self.sprite_size - math.floor(self.sprite_size / 6) + 1 + h > b.y and self.pos[1] + self.sprite_size - math.floor(self.sprite_size / 6) + 1 + h < b.y + b.sizeY:
+                        if self.pos[0] + self.hitbox_padding + 5 + w > b.x and self.pos[0] + self.hitbox_padding + 5 + w < b.x + b.sizeX:
+                            self.onGround = True
 
         if self.pos[0] < self.hitbox_padding + 2 - self.sprite_size:
             self.pos[0] = 800 - self.hitbox_padding - 2
         if self.pos[0] > 800 - self.hitbox_padding - 2:
             self.pos[0] = self.hitbox_padding + 2 - self.sprite_size
 
-        self.onGround = False
-        self.hit_box_calculation()
-
     def draw_hitboxes(self):
         move_down_by = 0
         if self.is_crouching:
             move_down_by = self.crouch_hitbox_decrees
 
+        # Hitbox
+        pygame.draw.rect(self.dis, (255, 255, 0), (
+            self.pos[0] + self.hitbox_padding,
+            self.pos[1] + move_down_by,
+            self.sprite_size - self.hitbox_padding * 2,
+            self.sprite_size - move_down_by), 2)
+
         # OnGround Hitbox
-        pygame.draw.rect(self.dis, (0, 255, 0), (self.pos[0] + 5, self.pos[1] + self.sprite_size - math.floor(self.sprite_size / 5) + 1, self.sprite_size - 10, math.floor(self.sprite_size / 5) + 1))
-        # Head
-        pygame.draw.rect(self.dis, (255, 0, 0), (self.pos[0] + self.hitbox_padding, self.pos[1] + move_down_by, self.sprite_size - self.hitbox_padding * 2, 15))
-        # Hitting Wall Hitbox
-        pygame.draw.rect(self.dis, (255, 255, 0), (self.pos[0] + self.hitbox_padding, self.pos[1] + 15 + move_down_by, 15, self.sprite_size - 24 - move_down_by))
-        pygame.draw.rect(self.dis, (255, 255, 0), (self.pos[0] + self.sprite_size - 15 - self.hitbox_padding, self.pos[1] + 15 + move_down_by, 15, self.sprite_size - 24 - move_down_by))
+        pygame.draw.rect(self.dis, (0, 255, 0), (
+            self.pos[0] + self.hitbox_padding + 5,
+            self.pos[1] + self.sprite_size - math.floor(self.sprite_size / 6) + 1,
+            self.sprite_size - self.hitbox_padding * 2 - 10,
+            math.floor(self.sprite_size / 6) + 1))

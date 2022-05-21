@@ -1,11 +1,12 @@
 import pygame
 import math
-from settings import *
+from grounds import *
 
 class Player:
-    def __init__(self, display, x: int, y: int):
+    def __init__(self, display, gravity: float, x: int, y: int):
         # Values
         self.dis = display
+        self.gravity = gravity
         self.pos = [x, y]
         self.vel = [0, 0]
 
@@ -108,9 +109,9 @@ class Player:
             if self.did_crouching:
                 for b in boxes:
                     for h in range(0, self.sprite_size - 20, 1):
-                        for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                        for w in range(0, self.sprite_size - self.hitbox_padding * 2 - 20, 1):
                             if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
-                                if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
+                                if self.pos[0] + self.hitbox_padding + 10 + w > b.x and self.pos[0] + self.hitbox_padding + 10 + w < b.x + b.sizeX:
                                     self.pos[1] = b.y + b.sizeY - move_down_by
             self.did_crouching = False
 
@@ -138,13 +139,22 @@ class Player:
                     if self.pos[1] + move_down_by + h > b.y and self.pos[1] + move_down_by + h < b.y + b.sizeY:
                         if self.pos[0] + self.hitbox_padding + w > b.x and self.pos[0] + self.hitbox_padding + w < b.x + b.sizeX:
                             self.pos[1] = b.y + b.sizeY - move_down_by
+
+    def find_friction(self):
+        for b in boxes:
+            for h in range(0, math.floor(self.sprite_size / 5) + 1, 1):
+                for w in range(0, self.sprite_size - self.hitbox_padding * 2, 1):
+                    if self.pos[1] + self.sprite_size - h + 1 > b.y and self.pos[1] + self.sprite_size - h < b.y + b.sizeY:
+                        if self.pos[0] + 5 + w > b.x and self.pos[0] + 5 + w < b.x + b.sizeX:
+                            return b.friction
+        return 1.2 # in the air
     
     def update(self):
         # Gravity
         if not self.onGround:
-            self.vel[1] += 2#world.gravity * self.mass
+            self.vel[1] += self.gravity * self.mass
 
-        resistence = world.friction
+        resistence = self.find_friction()
 
         # Velosity Calculations
         for i in range(0, 2, 1):

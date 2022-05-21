@@ -1,7 +1,7 @@
 import pygame
 
 fps = 60
-held_space = 0
+gravity = 3.8
 
 pygame.init()
 display = pygame.display.set_mode((800, 600))
@@ -9,15 +9,15 @@ pygame.display.set_caption('Gregs Adventure')
 clock = pygame.time.Clock()
 
 # Settings
-from settings import *
-boxes.append(Box(display, 0, 580, 800, 10))
-boxes.append(Box(display, 500, 550, 10, 30))
-boxes.append(Box(display, 100, 470, 50, 10))
-boxes.append(Box(display, 150, 450, 50, 10))
+from grounds import *
+boxes.append(Box(display, [0, 580, 800, 10], [0, 0, 0], 1.2))
+boxes.append(Box(display, [500, 550, 10, 30], [0, 0, 255], 1.2))
+boxes.append(Box(display, [100, 470, 50, 10], [0, 0, 0], 1.2))
+boxes.append(Box(display, [150, 450, 50, 10], [0, 0, 0], 1.2))
 
 # Player
 from player import *
-greg = Player(display, 100, 500)
+greg = Player(display, gravity, 100, 500)
 
 running = True
 while running:

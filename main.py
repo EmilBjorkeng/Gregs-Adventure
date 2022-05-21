@@ -8,7 +8,7 @@ display = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Gregs Adventure')
 clock = pygame.time.Clock()
 
-# Settings
+# Boxes
 from grounds import *
 boxes.append(Box(display, [0, 580, 800, 10], [0, 0, 0], 1.2))
 boxes.append(Box(display, [500, 550, 10, 30], [0, 0, 255], 1.2))
@@ -30,22 +30,15 @@ while running:
     greg.is_walking = False
     keys = pygame.key.get_pressed()
     # Left
-    left_and_right = 0
-    if keys[pygame.K_a]:
-        greg.move(-greg.speed)
+    if keys[pygame.K_a] and not keys[pygame.K_d]:
+        greg.move(-1)
         greg.facing_left = True
         greg.is_walking = True
-        left_and_right += 1
     # Right
-    if keys[pygame.K_d]:
-        greg.move(greg.speed)
+    elif keys[pygame.K_d] and not keys[pygame.K_a]:
+        greg.move(1)
         greg.facing_left = False
         greg.is_walking = True
-        left_and_right += 1
-    # Left and Right
-    if left_and_right == 2:
-        greg.move(0)
-        greg.is_walking = False
     # Jump
     if keys[pygame.K_SPACE]:
         greg.jump()

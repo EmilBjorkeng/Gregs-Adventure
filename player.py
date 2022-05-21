@@ -12,9 +12,9 @@ class Player:
 
         # Stats
         self.speed = 8
-        self.crouch_speed_mult = 0.7
+        self.crouch_speed = 3
         self.jump_force = 30
-        self.crouch_jump_mult = 0.8
+        self.crouch_jump_force = 20
         self.mass = 0.8
         self.air_friction = 1
 
@@ -60,18 +60,18 @@ class Player:
             self.crouch_walk_animation_sprite.subsurface(self.sprite_size * 4, 0, self.sprite_size, self.sprite_size)
         ]
 
-    def move(self, vel):
-        mult = 1
+    def move(self, dir):
         if self.is_crouching and self.onGround:
-            mult = self.crouch_speed_mult
-        self.vel[0] = vel * mult
+            self.vel[0] = dir * self.crouch_speed
+        else:
+            self.vel[0] = dir * self.speed
 
     def jump(self):
         if self.onGround:
-            mult = 1
-            if self.is_crouching and self.onGround:
-                mult = self.crouch_jump_mult
-            self.vel[1] = -self.jump_force * mult
+            if self.is_crouching:
+                self.vel[1] = -self.crouch_jump_force
+            else:
+                self.vel[1] = -self.jump_force
             self.is_jumping = True
     
     def draw(self):
@@ -194,10 +194,10 @@ class Player:
                         if self.pos[0] + self.hitbox_padding + 5 + w > b.x and self.pos[0] + self.hitbox_padding + 5 + w < b.x + b.sizeX:
                             self.onGround = True
 
-        if self.pos[0] < self.hitbox_padding + 2 - self.sprite_size:
-            self.pos[0] = 800 - self.hitbox_padding - 2
-        if self.pos[0] > 800 - self.hitbox_padding - 2:
-            self.pos[0] = self.hitbox_padding + 2 - self.sprite_size
+        if self.pos[0] < self.hitbox_padding * 2 - self.sprite_size:
+            self.pos[0] = 800 - self.hitbox_padding * 2
+        if self.pos[0] > 800 - self.hitbox_padding * 2:
+            self.pos[0] = self.hitbox_padding * 2 - self.sprite_size
 
     def draw_hitboxes(self):
         move_down_by = 0

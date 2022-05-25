@@ -1,4 +1,3 @@
-from turtle import back
 import pygame
 import menus.main_menu as main_menu
 import menus.pause_menu as pause_menu
@@ -7,7 +6,6 @@ from player import *
 
 fps = 60
 gravity = 3.8
-came_from_pause = False
 
 pygame.init()
 pygame_icon = pygame.image.load('./Assets/Icon.png')
@@ -17,6 +15,7 @@ pygame.display.set_caption('Gregs Adventure')
 clock = pygame.time.Clock()
 pygame.font.get_init()
 
+came_from_pause = False
 back_to_menu = True
 while True:
     back_to_menu = False

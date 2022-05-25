@@ -80,7 +80,7 @@ class Player:
         # Walking
         if self.is_walking:
             # Animation timer
-            self.animation_frame += 0.1
+            self.animation_frame += 0.2
             if self.animation_frame > len(self.walk_animation):
                 self.animation_frame = 0
             # Crouch walking

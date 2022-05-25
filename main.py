@@ -1,7 +1,7 @@
 from turtle import back
 import pygame
-import main_menu
-import pause_menu
+import menus.main_menu as main_menu
+import menus.pause_menu as pause_menu
 from grounds import *
 from player import *
 

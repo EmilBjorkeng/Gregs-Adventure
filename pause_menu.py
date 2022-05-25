@@ -1,3 +1,4 @@
+from re import T
 import pygame
 
 def run(display):
@@ -27,8 +28,7 @@ def run(display):
                 if mousepos[1] > 320 and mousepos[1] < 370:
                     temp = 0
                 if mousepos[1] > 380 and mousepos[1] < 430:
-                    pygame.quit()
-                    quit()
+                    return True
 
         pygame.draw.rect(display, (255, 255, 255), (100, 100, 600, 400))       
         pygame.draw.rect(display, (0, 0, 0), (100, 100, 600, 400), 3)
@@ -49,8 +49,8 @@ def run(display):
                 pygame.draw.rect(display, (0, 0, 255), (325, 380, 150, 50))
 
         # Text
-        text = title_font.render('Puse Menu', False, (0, 0, 0))
-        display.blit(text, (270, 120))
+        text = title_font.render('Pause Menu', False, (0, 0, 0))
+        display.blit(text, (250, 120))
         text = button_font.render('Resume', False, (255, 255, 255))
         display.blit(text, (335, 270))
         text = button_font.render('Options', False, (255, 255, 255))
@@ -58,3 +58,5 @@ def run(display):
         text = button_font.render('Quit', False, (255, 255, 255))
         display.blit(text, (365, 390))
         pygame.display.update()
+
+    return False

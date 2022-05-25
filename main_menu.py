@@ -4,6 +4,7 @@ def run(display):
     banner = pygame.image.load(r'./Assets/Banner.png')
     button_font = pygame.font.SysFont('Areal', 50)
     running = True
+    click_cooldown = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -12,15 +13,18 @@ def run(display):
 
         # Mouse
         if pygame.mouse.get_pressed()[0]:
-            mousepos = pygame.mouse.get_pos()
-            if mousepos[0] > 325 and mousepos[0] < 475:
-                if mousepos[1] > 260 and mousepos[1] < 310:
-                    running = False
-                if mousepos[1] > 320 and mousepos[1] < 370:
-                    temp = 0
-                if mousepos[1] > 380 and mousepos[1] < 430:
-                    pygame.quit()
-                    quit()
+            if not click_cooldown:
+                mousepos = pygame.mouse.get_pos()
+                if mousepos[0] > 325 and mousepos[0] < 475:
+                    if mousepos[1] > 260 and mousepos[1] < 310:
+                        running = False
+                    if mousepos[1] > 320 and mousepos[1] < 370:
+                        temp = 0
+                    if mousepos[1] > 380 and mousepos[1] < 430:
+                        pygame.quit()
+                        quit()
+        else:
+            click_cooldown = False
 
         display.fill((255, 255, 255))
 

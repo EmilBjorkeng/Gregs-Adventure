@@ -21,15 +21,14 @@ while True:
     back_to_menu = False
     main_menu.run(display)
 
-    # Boxes
+    # Clear out the boxes list
     while boxes:
         boxes.pop()
-    boxes.append(Box(display, [0, 580, 800, 10], [0, 0, 0], 1.2))
-    boxes.append(Box(display, [500, 550, 10, 30], [0, 0, 255], 1.2))
-    boxes.append(Box(display, [100, 470, 50, 10], [0, 0, 0], 1.2))
-    boxes.append(Box(display, [150, 450, 50, 10], [0, 0, 0], 1.2))
-    boxes.append(Box(display, [200, 420, 50, 10], [0, 0, 0], 1.2))
-    boxes.append(Box(display, [250, 530, 50, 10], [0, 0, 0], 1.2))
+
+    # I hate that I can do this
+    # I'm leaving it in just because of how cursed it is
+    # It hurts to look at it
+    [boxes.append(Box(display, k[0], k[1], k[2][0])) for k in [[j.split(",") for j in i] for i in [i.split(":") for i in open(r"./levels/level1.level", "r").read().split(";")]]]
 
     # Player
     greg = Player(display, gravity, 100, 0)

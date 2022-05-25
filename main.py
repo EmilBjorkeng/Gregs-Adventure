@@ -1,12 +1,17 @@
 import pygame
+import main_menu
+import pause_menu
 
 fps = 60
 gravity = 3.8
+
+came_from_pause = False
 
 pygame.init()
 display = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Gregs Adventure')
 clock = pygame.time.Clock()
+main_menu.run(display)
 
 # Boxes
 from grounds import *
@@ -46,6 +51,14 @@ while running:
     greg.is_crouching = False
     if keys[pygame.K_LSHIFT]:
         greg.is_crouching = True
+        
+    # Pause
+    if keys[pygame.K_ESCAPE]:
+        if not came_from_pause:
+            came_from_pause = True
+            pause_menu.run(display)
+    else:
+        came_from_pause = False
 
     greg.update()
 

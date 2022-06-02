@@ -1,34 +1,31 @@
 import pygame
-import levels.map_editor as map_editor
 
-def run(display):
+def run(display, go_back):
+    stop_clicking = True
+
     banner = pygame.image.load(r'./Assets/Banner.png')
     button_font = pygame.font.SysFont('Areal', 50)
     button_font_small = pygame.font.SysFont('Areal', 35)
-    running = True 
-    click_cooldown = True
-    while running:
+    
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-
+                return -1 # Exit
         # Mouse
         if pygame.mouse.get_pressed()[0]:
-            if not click_cooldown:
+            if not stop_clicking:
                 mousepos = pygame.mouse.get_pos()
                 if mousepos[0] > 325 and mousepos[0] < 475:
                     if mousepos[1] > 260 and mousepos[1] < 310:
-                        running = False
+                        return 1 # To game
                     if mousepos[1] > 320 and mousepos[1] < 370:
-                        map_editor.run(display)
+                        return 2 # Map Editor
                     if mousepos[1] > 380 and mousepos[1] < 430:
-                        temp = 0
+                        return 3 # Options
                     if mousepos[1] > 440 and mousepos[1] < 480:
-                        pygame.quit()
-                        quit()
-        else:
-            click_cooldown = False
+                        return -1 # Exit
+        elif stop_clicking:
+            stop_clicking = False
 
         display.fill((255, 255, 255))
 

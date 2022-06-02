@@ -1,88 +1,56 @@
 import pygame
+import game
 import menus.main_menu as main_menu
-import menus.pause_menu as pause_menu
-from grounds import *
-from player import *
+import levels.map_editor as map_editor
+import settings
 
-fps = 60
-gravity = 3.8
-
+# Init Pygame
 pygame.init()
+# Set Icon
 pygame_icon = pygame.image.load('./Assets/Icon.png')
 pygame.display.set_icon(pygame_icon)
+# make display
 display = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Gregs Adventure')
+# Get clock and activate fonts
 clock = pygame.time.Clock()
 pygame.font.get_init()
 
-came_from_pause = False
-back_to_menu = True
-while True:
-    back_to_menu = False
-    main_menu.run(display)
+# -1 = Exit
+# 0 = Main Menu
+# 1 = The Game
+# 2 = Map Editor
+# 3 = Settings
+switch_to = 0
+came_from = 0
 
-    # Clear out the boxes list
-    while boxes:
-        boxes.pop()
+# Main Loop
+running = True
+while running:
+    # Scene Manager/Switcher
+    match switch_to:
+        case -1:
+            running = False
+        case 0:
+            go_next = main_menu.run(display, came_from)
+            came_from = switch_to
+            switch_to = go_next
+        case 1:
+            go_next = game.run(display, clock, came_from)
+            came_from = switch_to
+            switch_to = go_next
+        case 2:
+            go_next = map_editor.run(display, came_from)
+            came_from = switch_to
+            switch_to = go_next
+        case 3:
+            go_next = settings.run(display, came_from)
+            came_from = switch_to
+            switch_to = go_next
+        case _:
+            print(f'Error: "{switch_to}" is not a valid switch_to value')
+            switch_to = 0
+            came_from = 0
 
-    # I hate that I can do this
-    # I'm leaving it in just because of how cursed it is
-    # It hurts to look at it
-    [boxes.append(Box(display, k[0], k[1], k[2][0])) for k in [[j.split(",") for j in i] for i in [i.split(":") for i in open(r"./levels/level1.level", "r").read().split(";")]]]
-
-    # Player
-    greg = Player(display, gravity, 100, 0)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        greg.is_walking = False
-        keys = pygame.key.get_pressed()
-        # Left
-        if keys[pygame.K_a] and not keys[pygame.K_d]:
-            greg.move(-1)
-            greg.facing_left = True
-            greg.is_walking = True
-        # Right
-        elif keys[pygame.K_d] and not keys[pygame.K_a]:
-            greg.move(1)
-            greg.facing_left = False
-            greg.is_walking = True
-        # Jump
-        if keys[pygame.K_SPACE]:
-            greg.jump()
-        # Crouch
-        greg.is_crouching = False
-        if keys[pygame.K_LSHIFT]:
-            greg.is_crouching = True
-
-        # Pause
-        if keys[pygame.K_ESCAPE]:
-            if not came_from_pause:
-                came_from_pause = True
-                pause_bool = pause_menu.run(display)
-                back_to_menu = pause_bool
-                running = not pause_bool
-        else:
-            came_from_pause = False
-
-        greg.update()
-
-        # Draw
-        display.fill((255, 255, 255))
-
-        greg.draw()
-        #greg.draw_hitboxes()
-
-        for i in boxes:
-            i.draw()
-
-        pygame.display.update()
-        clock.tick(fps)
-
-    if not back_to_menu:
-        pygame.quit()
-        quit()
+pygame.quit()
+quit()

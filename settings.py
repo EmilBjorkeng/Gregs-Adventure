@@ -32,7 +32,7 @@ def run(display, go_back):
                 pygame.draw.rect(display, (0, 0, 255), (325, 260, 150, 50))
 
         # Text
-        text = button_font.render('Map Editor', False, (0, 0, 0))
+        text = button_font.render('Options', False, (0, 0, 0))
         display.blit(text, (250, 120))
         text = button_font.render('Back', False, (255, 255, 255))
         display.blit(text, (335, 270))

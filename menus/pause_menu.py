@@ -1,34 +1,39 @@
 import pygame
 
 def run(display):
+    stop_clicking = True
+    stop_keyboard = True
+
     title_font = pygame.font.SysFont('Areal', 75)
     button_font = pygame.font.SysFont('Areal', 50)
-    came_from_gameplay = True
-    running = True
-    while running:
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                return -1 # Exit
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            if not came_from_gameplay:
-                running = False
-        else:
-            came_from_gameplay = False
+            if not stop_keyboard:
+                return 0 # Go back to game
+        elif stop_keyboard:
+            stop_keyboard = False
 
         # Mouse
         if pygame.mouse.get_pressed()[0]:
-            mousepos = pygame.mouse.get_pos()
-            if mousepos[0] > 325 and mousepos[0] < 475:
-                if mousepos[1] > 260 and mousepos[1] < 310:
-                    running = False
-                if mousepos[1] > 320 and mousepos[1] < 370:
-                    temp = 0
-                if mousepos[1] > 380 and mousepos[1] < 430:
-                    return True
+            if not stop_clicking:
+                mousepos = pygame.mouse.get_pos()
+                if mousepos[0] > 325 and mousepos[0] < 475:
+                    if mousepos[1] > 260 and mousepos[1] < 310:
+                        return 0 # Go back to game
+                    if mousepos[1] > 320 and mousepos[1] < 370:
+                        return 3 # Settings
+                    if mousepos[1] > 380 and mousepos[1] < 430:
+                        return -1 # Exit
+        elif stop_clicking:
+            stop_clicking = False
 
+        # Pause Field
         pygame.draw.rect(display, (255, 255, 255), (100, 100, 600, 400))   
         pygame.draw.rect(display, (0, 0, 0), (100, 100, 600, 400), 3)
 
@@ -57,5 +62,3 @@ def run(display):
         text = button_font.render('Quit', False, (255, 255, 255))
         display.blit(text, (365, 390))
         pygame.display.update()
-
-    return False

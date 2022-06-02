@@ -1,6 +1,6 @@
 import pygame
 import math
-from grounds import *
+from classes.grounds import *
 
 class Player:
     def __init__(self, display, gravity: float, x: int, y: int):

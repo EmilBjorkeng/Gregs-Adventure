@@ -1,4 +1,3 @@
-from re import T
 import pygame
 
 def run(display):
@@ -30,7 +29,7 @@ def run(display):
                 if mousepos[1] > 380 and mousepos[1] < 430:
                     return True
 
-        pygame.draw.rect(display, (255, 255, 255), (100, 100, 600, 400))       
+        pygame.draw.rect(display, (255, 255, 255), (100, 100, 600, 400))   
         pygame.draw.rect(display, (0, 0, 0), (100, 100, 600, 400), 3)
 
         # Buttons

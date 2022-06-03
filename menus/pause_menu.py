@@ -15,7 +15,7 @@ def run(display):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             if not stop_keyboard:
-                return 0 # Go back to game
+                return -2 # Go back to game
         elif stop_keyboard:
             stop_keyboard = False
 
@@ -25,11 +25,11 @@ def run(display):
                 mousepos = pygame.mouse.get_pos()
                 if mousepos[0] > 325 and mousepos[0] < 475:
                     if mousepos[1] > 260 and mousepos[1] < 310:
-                        return 0 # Go back to game
+                        return -2 # Go back to game
                     if mousepos[1] > 320 and mousepos[1] < 370:
                         return 3 # Settings
                     if mousepos[1] > 380 and mousepos[1] < 430:
-                        return -1 # Exit
+                        return 0 # Main Menu
         elif stop_clicking:
             stop_clicking = False
 

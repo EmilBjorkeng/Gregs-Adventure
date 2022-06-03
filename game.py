@@ -52,7 +52,7 @@ def run(display, clock, go_back, window_size):
         if keys[pygame.K_ESCAPE]:
             if not stop_keyboard:
                 pause_option = pause_menu.run(display)
-                if not pause_option == 0:
+                if not pause_option == -2:
                     return pause_option
                 stop_keyboard = True
         elif stop_keyboard:

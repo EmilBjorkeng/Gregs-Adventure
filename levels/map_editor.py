@@ -1,15 +1,13 @@
 import pygame
 
-def run(display, go_back):
+def run(display, go_back, window_size):
     stop_clicking = True
 
     button_font = pygame.font.SysFont('Areal', 50)
-    running = True 
-    while running:
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                return -1 # Exit
 
         # Mouse
         if pygame.mouse.get_pressed()[0]:
@@ -22,6 +20,8 @@ def run(display, go_back):
             stop_clicking = False
         
         display.fill((255, 255, 255))
+        pygame.draw.rect(display, (70, 70, 70), (0, 0, 200, window_size[1]))
+
         # Buttons
         pygame.draw.rect(display, (0, 0, 0), (325, 260, 150, 50))
 

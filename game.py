@@ -3,9 +3,10 @@ import menus.pause_menu as pause_menu
 from classes.grounds import *
 from classes.player import *
 
-def run(display, clock, go_back):
+def run(display, clock, go_back, window_size):
     fps = 60
     gravity = 3.8
+    stop_keyboard = True
 
     # Clear out the boxes list
     while boxes:
@@ -15,10 +16,11 @@ def run(display, clock, go_back):
     # I'm leaving it in just because of how cursed it is
     # It hurts to look at it
     # It does Load the level tho
+    # If you see this Fuck you :)
     [boxes.append(Box(display, k[0], k[1], k[2][0])) for k in [[j.split(",") for j in i] for i in [i.split(":") for i in open(r"./levels/level1.level", "r").read().split(";")]]]
 
     # Player
-    greg = Player(display, gravity, 100, 0)
+    greg = Player(display, gravity, 100, 0, window_size)
 
     # Game loop
     while True:
@@ -48,9 +50,13 @@ def run(display, clock, go_back):
 
         # Pause
         if keys[pygame.K_ESCAPE]:
-            pause_option = pause_menu.run(display)
-            if not pause_option == 0:
-                return pause_option
+            if not stop_keyboard:
+                pause_option = pause_menu.run(display)
+                if not pause_option == 0:
+                    return pause_option
+                stop_keyboard = True
+        elif stop_keyboard:
+            stop_keyboard = False
 
         greg.update()
 

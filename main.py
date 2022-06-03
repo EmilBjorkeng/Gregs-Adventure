@@ -4,13 +4,15 @@ import menus.main_menu as main_menu
 import levels.map_editor as map_editor
 import settings
 
+window_size = (800, 600)
+
 # Init Pygame
 pygame.init()
 # Set Icon
 pygame_icon = pygame.image.load('./Assets/Icon.png')
 pygame.display.set_icon(pygame_icon)
 # make display
-display = pygame.display.set_mode((800, 600))
+display = pygame.display.set_mode(window_size)
 pygame.display.set_caption('Gregs Adventure')
 # Get clock and activate fonts
 clock = pygame.time.Clock()
@@ -36,11 +38,11 @@ while running:
             came_from = switch_to
             switch_to = go_next
         case 1:
-            go_next = game.run(display, clock, came_from)
+            go_next = game.run(display, clock, came_from, window_size)
             came_from = switch_to
             switch_to = go_next
         case 2:
-            go_next = map_editor.run(display, came_from)
+            go_next = map_editor.run(display, came_from, window_size)
             came_from = switch_to
             switch_to = go_next
         case 3:

@@ -3,10 +3,11 @@ import math
 from classes.grounds import *
 
 class Player:
-    def __init__(self, display, gravity: float, x: int, y: int):
+    def __init__(self, display, gravity: float, x: int, y: int, window_size: list):
         # Values
         self.dis = display
         self.gravity = gravity
+        self.window_size = window_size
         self.pos = [x, y]
         self.vel = [0, 0]
 
@@ -194,10 +195,11 @@ class Player:
                         if self.pos[0] + self.hitbox_padding + 5 + w > b.x and self.pos[0] + self.hitbox_padding + 5 + w < b.x + b.sizeX:
                             self.onGround = True
 
-        if self.pos[0] < self.hitbox_padding * 2 - self.sprite_size:
-            self.pos[0] = 800 - self.hitbox_padding * 2
-        if self.pos[0] > 800 - self.hitbox_padding * 2:
-            self.pos[0] = self.hitbox_padding * 2 - self.sprite_size
+        for i in range(0, 2, 1):
+            if self.pos[i] < self.hitbox_padding * 2 - self.sprite_size - 1:
+                self.pos[i] = self.window_size[i] - self.hitbox_padding * 2 + 1
+            if self.pos[i] > self.window_size[i] - self.hitbox_padding * 2 + 1:
+                self.pos[i] = self.hitbox_padding * 2 - self.sprite_size - 1
 
     def draw_hitboxes(self):
         move_down_by = 0
